@@ -1,0 +1,11 @@
+{
+  "name": "Proxy_Wars",
+  "version": "0.0.2",
+  "title": "Proxy Wars",
+  "author": "DedlySpyder",
+  "contact": "DedlySpyder@gmail.com",
+  "homepage": "",
+  "description": "",
+  "dependencies": ["base >= 0.14.0"],
+  "factorio_version": "0.14"
+}
