@@ -1,12 +1,14 @@
---TODO
---Waitng on this: https://www.factorio.com/blog/post/fff-174
---Also 0.15 will give label word wrap for help button
-
 --~~~~~ Start Button ~~~~~--
 function drawStartButton()
 	local host = global.host
 	if not verifyStartButton(host) then
-		host.gui.top.add{type="button", name="Proxy_Wars_start", caption={"Proxy_Wars_host_start_button"}, tooltip={"Proxy_Wars_host_start_button_tooltip"}}
+		mod_gui.get_button_flow(host).add{
+			type="button", 
+			name="Proxy_Wars_start", 
+			caption={"Proxy_Wars_host_start_button"}, 
+			tooltip={"Proxy_Wars_host_start_button_tooltip"},
+			style=mod_gui.button_style
+		}
 		host.print({"Proxy_Wars_host_can_start"})
 	end
 end
@@ -14,12 +16,12 @@ end
 function destroyStartButton()
 	local host = global.host
 	if verifyStartButton(host) then
-		host.gui.top["Proxy_Wars_start"].destroy()
+		mod_gui.get_button_flow(host)["Proxy_Wars_start"].destroy()
 	end
 end
 
 function verifyStartButton(player)
-	if player.gui.top["Proxy_Wars_start"] and player.gui.top["Proxy_Wars_start"].valid then
+	if mod_gui.get_button_flow(player)["Proxy_Wars_start"] and mod_gui.get_button_flow(player)["Proxy_Wars_start"].valid then
 		return true
 	end
 	return false
@@ -41,30 +43,36 @@ end
 function drawArenaButton(player)
 	if not verifyArenaButton(player) then
 		Debug.log("Drawing Go To Arena for "..player.name)
-		player.gui.top.add{type="button", name="Proxy_Wars_arena", caption={"Proxy_Wars_arena_button"}, tooltip={"Proxy_Wars_arena_button_tooltip"}}
+		mod_gui.get_button_flow(player).add{
+			type="button", 
+			name="Proxy_Wars_arena", 
+			caption={"Proxy_Wars_arena_button"}, 
+			tooltip={"Proxy_Wars_arena_button_tooltip"},
+			style=mod_gui.button_style
+		}
 		player.print({"Proxy_Wars_fight_start_message"})
 	end
 end
 
 function updateArenaButton(player, toArenaFlag)
 	if toArenaFlag then
-		player.gui.top["Proxy_Wars_arena"].caption = {"Proxy_Wars_arena_button_back"}
-		player.gui.top["Proxy_Wars_arena"].tooltip = {"Proxy_Wars_arena_button_back_tooltip"}
+		mod_gui.get_button_flow(player)["Proxy_Wars_arena"].caption = {"Proxy_Wars_arena_button_back"}
+		mod_gui.get_button_flow(player)["Proxy_Wars_arena"].tooltip = {"Proxy_Wars_arena_button_back_tooltip"}
 	else
-		player.gui.top["Proxy_Wars_arena"].caption = {"Proxy_Wars_arena_button"}
-		player.gui.top["Proxy_Wars_arena"].tooltip = {"Proxy_Wars_arena_button_tooltip"}
+		mod_gui.get_button_flow(player)["Proxy_Wars_arena"].caption = {"Proxy_Wars_arena_button"}
+		mod_gui.get_button_flow(player)["Proxy_Wars_arena"].tooltip = {"Proxy_Wars_arena_button_tooltip"}
 	end
 end
 
 function destroyArenaButton(player)
 	if verifyArenaButton(player) then
 		Debug.log("Destroying Go To Arena for "..player.name)
-		player.gui.top["Proxy_Wars_arena"].destroy()
+		mod_gui.get_button_flow(player)["Proxy_Wars_arena"].destroy()
 	end
 end
 
 function verifyArenaButton(player)
-	if player.gui.top["Proxy_Wars_arena"] and player.gui.top["Proxy_Wars_arena"].valid then
+	if mod_gui.get_button_flow(player)["Proxy_Wars_arena"] and mod_gui.get_button_flow(player)["Proxy_Wars_arena"].valid then
 		return true
 	end
 	return false
@@ -74,17 +82,22 @@ end
 function drawMainMenu(player)
 	if not verifyMainMenu(player) then
 		Debug.log("Drawing Main Menu for "..player.name)
-		local frame = player.gui.top.add{type="frame", name="Proxy_Wars_main_frame", direction="horizontal"}
+		mod_gui.get_frame_flow(player).add{
+			type="frame", 
+			name="Proxy_Wars_main_frame", 
+			direction="horizontal",
+			style = mod_gui.frame_style
+		}
+		local frame = mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"]
 		frame.add{type="label", name="Proxy_Wars_round_timer", caption=formatRoundTime(global.round_time), style="Proxy_Wars_main_menu_round_timer"}
 		
-		--TODO - help button
-		--[[frame.add{
+		frame.add{
 			type="sprite-button", 
 			name="Proxy_Wars_view_help",
 			tooltip={"Proxy_Wars_view_help_button"},
 			sprite="proxy_wars_gui_view_help",
 			style="Proxy_Wars_players_buttons"
-		}]]
+		}
 		return true
 	end
 	return false
@@ -93,14 +106,14 @@ end
 function destroyMainMenu(player)
 	if verifyMainMenu(player) then
 		Debug.log("Destroying Main Menu GUI for "..player.name)
-		player.gui.top["Proxy_Wars_main_frame"].destroy()
+		mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"].destroy()
 		return true
 	end
 	return false
 end
 
 function verifyMainMenu(player)
-	if player.gui.top["Proxy_Wars_main_frame"] and player.gui.top["Proxy_Wars_main_frame"].valid then
+	if mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"] and mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"].valid then
 		return true
 	end
 	return false
@@ -112,7 +125,7 @@ function drawProxyWarsPlayerMenu(player)
 	drawMainMenu(player)
 	Debug.log("Adding Proxy Player buttons for "..player.name)
 
-	local frame = player.gui.top["Proxy_Wars_main_frame"]
+	local frame = mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"]
 
 	frame.add{
 		type="sprite-button", 
@@ -332,7 +345,7 @@ function drawHelpMenu(player)
 		frame.add{type="label", caption={"Proxy_Wars_help_title"}, style="Proxy_Wars_lists_title"}
 		
 		for i=1, 11 do
-			frame.add{type="label", caption={"Proxy_Wars_help_"..i}, style="Proxy_Wars_help_body"}
+			frame.add{type="label", single_line=false, caption={"Proxy_Wars_help_"..i}, style="Proxy_Wars_help_body"}
 		end
 		
 		local footer = frame.add{type="flow", name="footer_row", direction="horizontal"}

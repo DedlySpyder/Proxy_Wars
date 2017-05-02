@@ -3,7 +3,7 @@
 function updateRoundTime(player)
 	if verifyMainMenu(player) then
 		--Debug.log("Updating Round Time for "..player.name) --DEBUG
-		local timer = player.gui.top["Proxy_Wars_main_frame"]["Proxy_Wars_round_timer"]
+		local timer = mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"]["Proxy_Wars_round_timer"]
 		local currentTime = global.round_time
 		timer.caption = formatRoundTime(currentTime)
 		if currentTime == round_timer_warning then

@@ -20,6 +20,7 @@ data.raw["gui-style"].default["Proxy_Wars_players_buttons"] =
 	parent = "button_style",
 	width = 40,
 	height = 40,
+	top_margin = 100,
 	top_padding = 0,
 	right_padding = 0,
 	bottom_padding = 0,

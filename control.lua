@@ -1,3 +1,5 @@
+require("mod-gui")
+
 require "config"
 require "scripts/debugger"
 require "scripts/load_balancer_factory"
