@@ -11,15 +11,6 @@ round_timer_yellow = 180
 --A warning will sound for all players and the clock will go red below this time (seconds)
 round_timer_warning = 60
 
---This will increase the general speed of the match
---This number is used to lower the requirements for recipes in both time and resources
-game_speed = 1
-
---This is the minimum amount of time it can take to craft something at 100% crafting speed (i.e. by hand)
---Set to 0 to not have a minimum
---NOTE: There still seems to be a minimum for some recipes hardcoded
-minimum_base_crafting_speed = 0.1
-
 team_names = {
 	"Player_1",
 	"Player_2",
