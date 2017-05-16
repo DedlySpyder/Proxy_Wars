@@ -72,3 +72,5 @@ overall_modifier = 1.0
 --This is mostly for loging of the game
 --Check [factorio install]/script-output/proxy_wars.log for the log file
 debug_mode = true
+
+special_debug = false

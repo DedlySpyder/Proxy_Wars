@@ -53,12 +53,41 @@ script.on_init(function()
 	global.chest_load_balancer_work = global.chest_load_balancer_work or {}
 	global.chest_balancer = Load_Balancer_Factory.create("Chest", global.chest_load_balancer_work, 300, "Chest_Action_")
 	--Load_Balancer_Factory.create() for each
+	
+	script.on_event(defines.events.on_tick, waiting_for_players)
 end)
+
+script.on_load(function()
+	if global.game_started then
+		script.on_event(defines.events.on_tick, waiting_for_players)
+	else
+		script.on_event(defines.events.on_tick, on_tick)
+	end
+end)
+
+--On tick event handler for the pre-game
+--Replaced when the Proxy Wars game actually starts
+function waiting_for_players()
+	if game.tick ~= 0 then
+		if wait_before_start > 0 then
+			if game.tick % (wait_before_start * 60) == 0 then
+				drawStartButton()
+			end
+		else
+			drawStartButton()
+		end
+	end
+end
+
+function on_tick()
+	global.secondly_balancer:on_tick()
+	global.chest_balancer:on_tick()
+	--:on_tick() for each load balancer
+end
 
 function on_player_created(event)
 	local player = game.players[event.player_index]
-	player.print(test)
-	player.print(test1)
+	
 	--Set the first player to the host
 	if not global.host then
 		global.host = player
@@ -89,30 +118,6 @@ function on_player_created(event)
 end
 
 script.on_event(defines.events.on_player_created, on_player_created)
-
---On tick event handler for the pre-game
---Replaced when the Proxy Wars game actually starts
-function waiting_for_players()
-	if game.tick ~= 0 then
-		if wait_before_start > 0 then
-			if game.tick % (wait_before_start * 60) == 0 then
-				drawStartButton()
-				script.on_event(defines.events.on_tick, on_tick)
-			end
-		else
-			drawStartButton()
-			script.on_event(defines.events.on_tick, on_tick)
-		end
-	end
-end
-
-function on_tick()
-	global.secondly_balancer:on_tick()
-	global.chest_balancer:on_tick()
-	--:on_tick() for each load balancer
-end
-
-script.on_event(defines.events.on_tick, waiting_for_players)
 
 function on_built_entity(event)
 	local entity = event.created_entity
@@ -167,6 +172,7 @@ function on_gui_click(event)
 			if player == global.host then
 				messageAll({"Proxy_Wars_starting_game"})
 				onClickedStartButton()
+				script.on_event(defines.events.on_tick, on_tick)
 			else
 				player.print({"Proxy_Wars_warning_start_not_host"})
 			end

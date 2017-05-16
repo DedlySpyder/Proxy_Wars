@@ -234,18 +234,21 @@ function drawValueList(player)
 		
 		local itemPrototypes = game.item_prototypes
 		local sortedValues = getSortedValueList()
+		Debug.special("[Listing values]")
 		for _, data in pairs(sortedValues) do
 			if itemPrototypes[data.item] then
 				if data.value > 0 then
 					local entry = entries.add{type="flow", name="entry_"..data.item, direction="horizontal"}
 					entry.add{type="label", caption=itemPrototypes[data.item].localised_name, style="Proxy_Wars_value_list_entry_item"}
 					entry.add{type="label", caption=getFormattedNumber(data.value), style="Proxy_Wars_value_list_entry_value"}
+					Debug.special_table(data)
 				end
 			end
 		end
 		
 		local footer = frame.add{type="flow", name="footer_row", direction="horizontal"}
 		footer.add{type="label", caption={"Proxy_Wars_current_money", getFormattedNumber(global.money[player.force.name])}, style="Proxy_Wars_value_list_current_money"}
+		Debug.special("Money amount: "..global.money[player.force.name])
 		footer.add{type="button", name="Proxy_Wars_value_list_close", caption={"Proxy_Wars_lists_close"}, style="Proxy_Wars_lists_close"}
 		return true
 	end
@@ -297,10 +300,12 @@ function drawBuyBiters(player)
 			biter.add{type="label", caption=global.bought_biters[player.force.name][name], style="Proxy_Wars_buy_biters_entry_current"}
 			biter.add{type="label", caption="|", style="Proxy_Wars_lists_separator"}
 			biter.add{type="label", caption=getFormattedNumber(cost * modifier), style="Proxy_Wars_buy_biters_entry_cost"}
+			Debug.special("Cost for biter ("..name..") at "..(cost * modifier))
 		end
 		
 		local footer = frame.add{type="flow", name="footer_row", direction="horizontal"}
 		footer.add{type="label", caption={"Proxy_Wars_current_money", getFormattedNumber(global.money[player.force.name])}, style="Proxy_Wars_buy_biters_current_money"}
+		Debug.special("Money amount: "..global.money[player.force.name])
 		footer.add{type="button", name="Proxy_Wars_buy_biters_close", caption={"Proxy_Wars_lists_close"}, style="Proxy_Wars_lists_close"}
 		return true
 	end
