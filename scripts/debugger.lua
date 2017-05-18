@@ -34,8 +34,10 @@ end
 -- @param message - message to be logged
 function Debug.log(message)
 	if Debug.log_write_flag then
-		message = "["..game.tick.."]"..message.."\n"
-		game.write_file(Debug.log_name..".log", message, true)
+		if message then
+			message = "["..game.tick.."]"..message.."\n"
+			game.write_file(Debug.log_name..".log", message, true)
+		end
 	end
 end
 
@@ -43,7 +45,9 @@ end
 -- @param message - message to be logged
 function Debug.log_no_tick(message)
 	if Debug.log_write_flag then
-		game.write_file(Debug.log_name..".log", message.."\n", true)
+		if message then
+			game.write_file(Debug.log_name..".log", message.."\n", true)
+		end
 	end
 end
 
@@ -57,7 +61,9 @@ end
 
 function Debug.special(message)
 	if Debug.special_log then
-		game.write_file(Debug.log_name..".log", message.."\n", true)
+		if message then
+			game.write_file(Debug.log_name..".log", message.."\n", true)
+		end
 	end
 end
 
