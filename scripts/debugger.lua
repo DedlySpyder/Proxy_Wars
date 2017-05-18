@@ -16,6 +16,7 @@ Debug = {}
 --Flags to write logs or to the console
 Debug.console_write_flag = true
 Debug.log_write_flag = true
+Debug.special_log = special_debug
 
 Debug.log_name = "proxy_wars"
 
@@ -33,8 +34,10 @@ end
 -- @param message - message to be logged
 function Debug.log(message)
 	if Debug.log_write_flag then
-		message = "["..game.tick.."]"..message.."\n"
-		game.write_file(Debug.log_name..".log", message, true)
+		if message then
+			message = "["..game.tick.."]"..message.."\n"
+			game.write_file(Debug.log_name..".log", message, true)
+		end
 	end
 end
 
@@ -42,7 +45,9 @@ end
 -- @param message - message to be logged
 function Debug.log_no_tick(message)
 	if Debug.log_write_flag then
-		game.write_file(Debug.log_name..".log", message.."\n", true)
+		if message then
+			game.write_file(Debug.log_name..".log", message.."\n", true)
+		end
 	end
 end
 
@@ -50,6 +55,20 @@ end
 -- @param t - table of data
 function Debug.log_table(t)
 	if Debug.log_write_flag then
+		game.write_file(Debug.log_name..".log", serpent.block(t, {comment = false}).."\n", true)
+	end
+end
+
+function Debug.special(message)
+	if Debug.special_log then
+		if message then
+			game.write_file(Debug.log_name..".log", message.."\n", true)
+		end
+	end
+end
+
+function Debug.special_table(t)
+	if Debug.special_log then
 		game.write_file(Debug.log_name..".log", serpent.block(t, {comment = false}).."\n", true)
 	end
 end

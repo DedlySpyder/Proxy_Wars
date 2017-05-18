@@ -132,9 +132,11 @@ end
 -- @param num number to formatRoundTime
 -- @return formatted number
 function getFormattedNumber(num)
-	local flag = 1
-	while flag ~= 0 do
-		num, flag = string.gsub(num, "^(-?%d+)(%d%d%d)", '%1,%2')
+	if num then
+		local flag = 1
+		while flag ~= 0 do
+			num, flag = string.gsub(num, "^(-?%d+)(%d%d%d)", '%1,%2')
+		end
 	end
 	return num
 end
