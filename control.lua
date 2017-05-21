@@ -59,9 +59,9 @@ end)
 
 script.on_load(function()
 	if global.game_started then
-		script.on_event(defines.events.on_tick, waiting_for_players)
-	else
 		script.on_event(defines.events.on_tick, on_tick)
+	else
+		script.on_event(defines.events.on_tick, waiting_for_players)
 	end
 end)
 
@@ -173,6 +173,7 @@ function on_gui_click(event)
 				messageAll({"Proxy_Wars_starting_game"})
 				onClickedStartButton()
 				script.on_event(defines.events.on_tick, on_tick)
+				global.game_started = true
 			else
 				player.print({"Proxy_Wars_warning_start_not_host"})
 			end
