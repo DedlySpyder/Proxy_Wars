@@ -89,10 +89,10 @@ function generateTechValue(tech)
 			value = generateTechValue(prerequisite) + 1
 		end
 	end
-	Debug.log(tech.name)
+	Debug.info(tech.name)
 	for _, effect in pairs(tech.effects) do
 		if effect.type == "unlock-recipe" then
-			Debug.log(effect.recipe)
+			Debug.info(effect.recipe)
 			global.recipe_tech_values[effect.recipe] = value
 		end
 	end

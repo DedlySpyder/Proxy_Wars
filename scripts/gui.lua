@@ -24,17 +24,17 @@ function buyBiter(player, biter)
 		local modifier = global.buy_biters_modifier[player.name]
 		local price = biter_costs[biter] * (modifier or 1)
 		local money = global.money[teamName]
-		Debug.log(player.name.." is purchasing "..modifier.." "..biter.." for "..price)
+		Debug.info(player.name.." is purchasing "..modifier.." "..biter.." for "..price)
 		
 		if price <= money then
 			global.money[teamName] = money - price
 			global.bought_biters[teamName][biter] = global.bought_biters[teamName][biter] + modifier
 			updateBuyBiters(player)
 			
-			Debug.log(teamName.." now has "..global.bought_biters[teamName][biter].. " "..biter)
+			Debug.info(teamName.." now has "..global.bought_biters[teamName][biter].. " "..biter)
 		else
 			player.print({"Proxy_Wars_insufficient_funds"})
-			Debug.log(player.name.." attempted to buy a "..biter.." at "..price..", only having money")
+			Debug.warn(player.name.." attempted to buy a "..biter.." at "..price..", only having money")
 		end
 	end
 end
@@ -54,7 +54,7 @@ end
 
 --Sorts the points table
 function sortPoints()
-	Debug.log("Sorting Points")
+	Debug.info("Sorting Points")
 	local flag = true
 	local points = global.points
 	local temp
@@ -71,7 +71,7 @@ function sortPoints()
 			end
 		end
 	end
-	Debug.log("Sorted Points:")
+	Debug.info("Sorted Points:")
 	for i, data in ipairs(global.points) do
 		Debug.log_no_tick(i..":")
 		Debug.log_table(data)

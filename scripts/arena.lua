@@ -53,11 +53,11 @@ function checkForWinner()
 		end
 	end
 	]]
-	Debug.log("There are still "..num.." team(s) in the fight.")
+	Debug.info("There are still "..num.." team(s) in the fight.")
 	
 	if num == 0 then
 		messageAll({"Proxy_Wars_fight_result_draw"})
-		Debug.log("Fight round ending in a draw")
+		Debug.info("Fight round ending in a draw")
 		endRound()
 	elseif num == 1 then
 		for winner, _ in pairs(participants) do
@@ -97,11 +97,11 @@ function spawnBiters()
 				end
 				global.spawned_biters[teamName][biter] = spawned
 				global.bought_biters[teamName][biter] = amount - spawned
-				Debug.log("Spawned "..spawned.." "..biter.."(s) at position ("..spawnPosition.x..", "..spawnPosition.y..") for "..teamName)
+				Debug.info("Spawned "..spawned.." "..biter.."(s) at position ("..spawnPosition.x..", "..spawnPosition.y..") for "..teamName)
 			end
 			unitGroup.set_command({type=defines.command.go_to_location, destination={0,0}, distraction=defines.distraction.by_damage})
 			global.biter_groups[teamName] = unitGroup
-			--Debug.log("Biter Group:# - "..#global.biter_groups[teamName].members)
+			--Debug.info("Biter Group:# - "..#global.biter_groups[teamName].members)
 		end
 		global.last_fight_death = nil
 		global.secondly_balancer:addAction(roundTimeOut, " ", "round_timeout")
@@ -124,13 +124,13 @@ function determineSpawns()
 		if teams[teamName] then 
 			local playerName = global.assigned_teams[teamName].name
 			messageAll({"Proxy_Wars_fight_entering_fight", playerName})
-			Debug.log(playerName.." is entering the fight") 
+			Debug.info(playerName.." is entering the fight") 
 			num = num + 1
 		end
 	end
 	
 	if num > 1 then
-		Debug.log("There are "..num.." teams ready to start the round")
+		Debug.info("There are "..num.." teams ready to start the round")
 		local spawns = calculateSpawnPoints(num)
 		local i = 1
 		for team, _ in pairs(teams) do
@@ -138,7 +138,7 @@ function determineSpawns()
 			i = i + 1
 		end
 	else
-		Debug.log("There are only "..num.." teams ready to start the round")
+		Debug.warn("There is/are only "..num.." teams ready to start the round")
 		return nil
 	end
 	return teams
@@ -158,7 +158,7 @@ function calculateSpawnPoints(num)
 			local x = round(math.cos(a) * spawnRadius)
 			local y = round(math.sin(a) * spawnRadius)
 			table.insert(spawnPoints, {x=x, y=y})
-			Debug.log("Calculating spawn point at ("..x..", "..y..")")
+			Debug.info("Calculating spawn point at ("..x..", "..y..")")
 		end
 		i = i + 1
 	end

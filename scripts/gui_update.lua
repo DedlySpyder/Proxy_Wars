@@ -42,7 +42,7 @@ end
 
 function drawArenaButton(player)
 	if not verifyArenaButton(player) then
-		Debug.log("Drawing Go To Arena for "..player.name)
+		Debug.info("Drawing Go To Arena for "..player.name)
 		mod_gui.get_button_flow(player).add{
 			type="button", 
 			name="Proxy_Wars_arena", 
@@ -66,7 +66,7 @@ end
 
 function destroyArenaButton(player)
 	if verifyArenaButton(player) then
-		Debug.log("Destroying Go To Arena for "..player.name)
+		Debug.info("Destroying Go To Arena for "..player.name)
 		mod_gui.get_button_flow(player)["Proxy_Wars_arena"].destroy()
 	end
 end
@@ -81,7 +81,7 @@ end
 --~~~~~ Main Menu GUI ~~~~~--
 function drawMainMenu(player)
 	if not verifyMainMenu(player) then
-		Debug.log("Drawing Main Menu for "..player.name)
+		Debug.info("Drawing Main Menu for "..player.name)
 		mod_gui.get_frame_flow(player).add{
 			type="frame", 
 			name="Proxy_Wars_main_frame", 
@@ -105,7 +105,7 @@ end
 
 function destroyMainMenu(player)
 	if verifyMainMenu(player) then
-		Debug.log("Destroying Main Menu GUI for "..player.name)
+		Debug.info("Destroying Main Menu GUI for "..player.name)
 		mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"].destroy()
 		return true
 	end
@@ -123,7 +123,7 @@ end
 --Adds player buttons to Main GUI
 function drawProxyWarsPlayerMenu(player)
 	drawMainMenu(player)
-	Debug.log("Adding Proxy Player buttons for "..player.name)
+	Debug.info("Adding Proxy Player buttons for "..player.name)
 
 	local frame = mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"]
 
@@ -169,7 +169,7 @@ end
 --~~~~~ Scoreboard GUI ~~~~~--
 function drawScoreboard(player)
 	if verifyOpenCenterGUI(player) then
-		Debug.log("Drawing Scoreboard GUI for "..player.name)
+		Debug.info("Drawing Scoreboard GUI for "..player.name)
 		local frame = player.gui.center.add{type="frame", name="Proxy_Wars_scoreboard", direction="vertical"}
 		frame.add{type="label", caption={"Proxy_Wars_scoreboard_title"}, style="Proxy_Wars_lists_title"}
 		
@@ -205,7 +205,7 @@ end
 
 function destroyScoreboard(player)
 	if verifyScoreboard(player) then
-		Debug.log("Destroying Scoreboard GUI for "..player.name)
+		Debug.info("Destroying Scoreboard GUI for "..player.name)
 		player.gui.center["Proxy_Wars_scoreboard"].destroy()
 		return true
 	end
@@ -222,7 +222,7 @@ end
 --~~~~~ Value List GUI ~~~~~--
 function drawValueList(player)
 	if verifyOpenCenterGUI(player) then
-		Debug.log("Drawing Value List GUI for "..player.name)
+		Debug.info("Drawing Value List GUI for "..player.name)
 		local frame = player.gui.center.add{type="frame", name="Proxy_Wars_value_list", direction="vertical"}
 		frame.add{type="label", caption={"Proxy_Wars_value_list_title"}, style="Proxy_Wars_lists_title"}
 		
@@ -254,7 +254,7 @@ end
 
 function destroyValueList(player)
 	if verifyValueList(player) then
-		Debug.log("Destroying Value List GUI for "..player.name)
+		Debug.info("Destroying Value List GUI for "..player.name)
 		player.gui.center["Proxy_Wars_value_list"].destroy()
 		return true
 	end
@@ -271,7 +271,7 @@ end
 --~~~~~ Buy Biters GUI ~~~~~--
 function drawBuyBiters(player)
 	if verifyOpenCenterGUI(player) then
-		Debug.log("Drawing Buy Biters GUI for "..player.name)
+		Debug.info("Drawing Buy Biters GUI for "..player.name)
 		local modifier = global.buy_biters_modifier[player.name]
 		
 		local frame = player.gui.center.add{type="frame", name="Proxy_Wars_buy_biters", direction="vertical"}
@@ -309,7 +309,7 @@ end
 
 function updateBuyBiters(player)
 	if verifyBuyBiters(player) then
-		Debug.log("Updating Buy Biters GUI for "..player.name)
+		Debug.info("Updating Buy Biters GUI for "..player.name)
 		local modifier = global.buy_biters_modifier[player.name]
 		if destroyBuyBiters(player) then
 			if modifier then global.buy_biters_modifier[player.name] = modifier end
@@ -322,7 +322,7 @@ end
 
 function destroyBuyBiters(player)
 	if verifyBuyBiters(player) then
-		Debug.log("Destroying Buy Biters GUI for "..player.name)
+		Debug.info("Destroying Buy Biters GUI for "..player.name)
 		player.gui.center["Proxy_Wars_buy_biters"].destroy()
 		global.buy_biters_modifier[player.name] = 1
 		return true
@@ -340,7 +340,7 @@ end
 --~~~~~ Help GUI ~~~~~--
 function drawHelpMenu(player)
 	if verifyOpenCenterGUI(player) then
-		Debug.log("Drawing Help GUI for "..player.name)
+		Debug.info("Drawing Help GUI for "..player.name)
 		local frame = player.gui.center.add{type="frame", name="Proxy_Wars_help", direction="vertical", style="Proxy_Wars_help_frame"}
 		frame.add{type="label", caption={"Proxy_Wars_help_title"}, style="Proxy_Wars_lists_title"}
 		
@@ -358,7 +358,7 @@ end
 
 function destroyHelpMenu(player)
 	if verifyHelpMenu(player) then
-		Debug.log("Destroying Help GUI for "..player.name)
+		Debug.info("Destroying Help GUI for "..player.name)
 		player.gui.center["Proxy_Wars_help"].destroy()
 		return true
 	end

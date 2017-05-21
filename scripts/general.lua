@@ -1,6 +1,6 @@
 --Reset the timer
 function startRound()
-	Debug.log("Starting round")
+	Debug.info("Starting round")
 	global.round_time = round_length * 60
 end
 
@@ -10,7 +10,7 @@ function endRound(winner)
 	if winner then
 		local playerName = global.assigned_teams[winner].name
 		messageAll({"Proxy_Wars_fight_result_winner", playerName})
-		Debug.log(playerName.." won a round.")
+		Debug.info(playerName.." won a round.")
 		for _, data in ipairs(global.points) do
 			if data.player == playerName then
 				data.points = data.points + 1
@@ -67,7 +67,7 @@ end
 
 --Sound the klaxon for all players
 function soundKlaxonAll()
-	Debug.log("Sounding klaxon for all players")
+	Debug.info("Sounding klaxon for all players")
 	for _, player in pairs(game.players) do
 		soundKlaxon(player)
 	end

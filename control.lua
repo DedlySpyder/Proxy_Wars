@@ -14,11 +14,8 @@ require "scripts/item_values"
 require "scripts/commands"
 
 script.on_init(function()
-	Debug.log_on_init()
-	
+	Debug.init_log()
 	global.map_gen_settings = global.map_gen_settings or game.surfaces["nauvis"].map_gen_settings
-	Debug.log_no_tick("Map gen settings:")
-	Debug.log_table(global.map_gen_settings)
 	
 	global.item_values = global.item_values or item_values			--[itemName] = value
 	global.player_list = global.player_list or {}					--[playerName] = teamName
@@ -64,6 +61,26 @@ script.on_load(function()
 		script.on_event(defines.events.on_tick, waiting_for_players)
 	end
 end)
+
+--Player connected event handler
+function on_player_joined_game(event)
+	if game.tick ~= 0 then
+		Debug.init_log(event.player_index)
+	end
+end
+
+script.on_event(defines.events.on_player_joined_game, on_player_joined_game)
+
+--Setting change event handler
+function on_runtime_mod_setting_changed(event)
+	local setting = event.setting
+	
+	if setting == "Proxy_Wars_log_level" then
+		Debug.log_level = debugger_levels[settings.global["Proxy_Wars_log_level"].value]
+	end
+end
+
+script.on_event(defines.events.on_runtime_mod_setting_changed, on_runtime_mod_setting_changed)
 
 --On tick event handler for the pre-game
 --Replaced when the Proxy Wars game actually starts
@@ -141,7 +158,7 @@ function on_entity_removed(event)
 			global.last_fight_death = game.tick
 			--local func = function(arg) return entity == arg end
 			--global.spawned_biters[entity.force.name] = removeFromTable(func, global.spawned_biters[entity.force.name])
-			--Debug.log(entity.force.name.." lost a "..entity.name.." "..#global.spawned_biters[entity.force.name].." remaining")
+			--Debug.info(entity.force.name.." lost a "..entity.name.." "..#global.spawned_biters[entity.force.name].." remaining")
 			checkForWinner()
 			return
 		end
@@ -163,12 +180,12 @@ function on_gui_click(event)
 	local element = event.element
 	
 	if string.sub(element.name, 1, 11) == "Proxy_Wars_" then
-		Debug.log("Mod button "..element.name.." pressed by "..player.name)
+		Debug.info("Mod button "..element.name.." pressed by "..player.name)
 		local modButton = string.sub(element.name, 12)
 		
 		--Start Game button
 		if modButton == "start" then
-			Debug.log("Start button pressed by "..player.name)
+			Debug.info("Start button pressed by "..player.name)
 			if player == global.host then
 				messageAll({"Proxy_Wars_starting_game"})
 				onClickedStartButton()
@@ -223,31 +240,31 @@ script.on_event(defines.events.on_gui_click, on_gui_click)
 --Hotkeys
 function on_view_scroreboard(event)
 	local player = game.players[event.player_index]
-	Debug.log(player.name.." pressed the view scoreboard hotkey")
+	Debug.info(player.name.." pressed the view scoreboard hotkey")
 	if not drawScoreboard(player) then destroyScoreboard(player) end
 end
 
 function on_view_value_list(event)
 	local player = game.players[event.player_index]
-	Debug.log(player.name.." pressed the view value list hotkey")
+	Debug.info(player.name.." pressed the view value list hotkey")
 	if not drawValueList(player) then destroyValueList(player) end
 end
 
 function on_view_buy_biters(event)
 	local player = game.players[event.player_index]
-	Debug.log(player.name.." pressed the view buy biters hotkey")
+	Debug.info(player.name.." pressed the view buy biters hotkey")
 	if not drawBuyBiters(player) then destroyBuyBiters(player) end
 end
 
 function on_buy_biter_modifier(event)
 	local player = game.players[event.player_index]
-	Debug.log(player.name.." pressed the buy biters modifier hotkey")
+	Debug.info(player.name.." pressed the buy biters modifier hotkey")
 	if verifyBuyBiters(player) then increaseBuyBitersModifier(player) end
 end
 
 function on_view_help(event)
 	local player = game.players[event.player_index]
-	Debug.log(player.name.." pressed the view help hotkey")
+	Debug.info(player.name.." pressed the view help hotkey")
 	if not drawHelpMenu(player) then destroyHelpMenu(player) end
 end
 

@@ -60,8 +60,7 @@ tech_level_modifier = 1.0 --Not currently in use
 energy_modifier = 1.0
 overall_modifier = 1.0
 
---This is mostly for loging of the game
---Check [factorio install]/script-output/proxy_wars.log for the log file
-debug_mode = true
+--This allows commands for debugging the game
+debug_mode = false
 
 special_debug = false

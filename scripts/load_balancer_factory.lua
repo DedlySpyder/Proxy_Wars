@@ -44,9 +44,9 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		loadBalancer.default_name = defaultName or Load_Balancer_Factory.default_name
 		loadBalancer.global = globalTable
 		
-		Debug.log("[LB]Creating new load balancer: "..balancerName)
-		Debug.log("[LB]New load blanacer iteration_length: "..loadBalancer.iteration_length)
-		Debug.log("[LB]New load blanacer default_name: "..loadBalancer.default_name)
+		Debug.info("[LB]Creating new load balancer: "..balancerName)
+		Debug.info("[LB]New load blanacer iteration_length: "..loadBalancer.iteration_length)
+		Debug.info("[LB]New load blanacer default_name: "..loadBalancer.default_name)
 		
 		--Initialize global variables
 		loadBalancer.global.name = balancerName
@@ -64,14 +64,14 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		function loadBalancer:addAction(action, data, name)
 			if action then
 				if not data then
-					Debug.log("[LB][WARN]["..self.global.name.."]Data was null, continuing to add action.")
+					Debug.warn("[LB]["..self.global.name.."]Data was null, continuing to add action.")
 				end
 				
 				--Check if the name is already in use
 				if name then
 					for _, action in ipairs(self.global.actions) do
 						if action.name == name then
-							Debug.log("[LB][WARN]["..self.global.name.."]While adding new action, name ("..name..") already in use. Using default naming scheme instead.")
+							Debug.warn("[LB]["..self.global.name.."]While adding new action, name ("..name..") already in use. Using default naming scheme instead.")
 							name = nil
 						end
 					end
@@ -81,11 +81,11 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 					self.global.default_name_increment = self.global.default_name_increment+1
 				end
 				table.insert(self.global.actions, {action=action, data=data, name=name})
-				Debug.log("[LB]["..self.global.name.."]Adding action: "..name)
+				Debug.info("[LB]["..self.global.name.."]Adding action: "..name)
 				self:rebalanceActions()
 				return name
 			end
-			Debug.log("[LB][ERROR]["..self.global.name.."]Action was null, could not add action.")
+			Debug.error("[LB]["..self.global.name.."]Action was null, could not add action.")
 			return nil
 		end
 		
@@ -96,7 +96,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		-- @param arg - table of the data {}
 		-- @return action table entry
 		function loadBalancer:modifyData(name, arg)
-			Debug.log("[LB]["..self.global.name.."]Modifying data: "..name)
+			Debug.info("[LB]["..self.global.name.."]Modifying data: "..name)
 			local index
 			for i, action in ipairs(self.global.actions) do
 				if action.name == name then index = i end
@@ -110,7 +110,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 					end
 				end
 			else
-				Debug.log("[LB][WARN]["..self.global.name.."]No data found for modify data")
+				Debug.warn("[LB]["..self.global.name.."]No data found for modify data")
 			end
 			return thisAction
 		end
@@ -121,7 +121,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		-- @param arg - new data to be used
 		-- @return action table entry
 		function loadBalancer:replaceData(name, arg)
-			Debug.log("[LB]["..self.global.name.."]Replacing data: "..name)
+			Debug.info("[LB]["..self.global.name.."]Replacing data: "..name)
 			local index
 			for i, action in ipairs(self.global.actions) do
 				if action.name == name then index = i end
@@ -132,7 +132,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 					thisAction.data = arg
 				end
 			else
-				Debug.log("[LB][WARN]["..self.global.name.."]No data found for replace data")
+				Debug.warn("[LB]["..self.global.name.."]No data found for replace data")
 			end
 			return thisAction
 		end
@@ -143,7 +143,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		-- @param arg - new function to be used
 		-- @return action table entry
 		function loadBalancer:replaceAction(name, arg)
-			Debug.log("[LB]["..self.global.name.."]Replacing action: "..name)
+			Debug.info("[LB]["..self.global.name.."]Replacing action: "..name)
 			local index
 			for i, action in ipairs(self.global.actions) do
 				if action.name == name then index = i end
@@ -154,7 +154,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 					thisAction.action = arg
 				end
 			else
-				Debug.log("[LB][WARN]["..self.global.name.."]No data found for repalce action")
+				Debug.warn("[LB]["..self.global.name.."]No data found for repalce action")
 			end
 			return thisAction
 		end
@@ -164,7 +164,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		-- @return true/false
 		function loadBalancer:removeAction(name)
 			if name then
-				Debug.log("[LB]["..self.global.name.."]Removing action: "..name)
+				Debug.info("[LB]["..self.global.name.."]Removing action: "..name)
 				local newTable = {}
 				local test = function (arg) return arg.name == name end
 				for _, row in ipairs(self.global.actions) do
@@ -174,13 +174,13 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 				self:rebalanceActions()
 				return true
 			end
-			Debug.log("[LB][ERROR]["..self.global.name.."]Cannot remove action, no name provided")
+			Debug.error("[LB]["..self.global.name.."]Cannot remove action, no name provided")
 			return false
 		end
 		
 		--Called to remove all actions from the load_balancer
 		function loadBalancer:removeAllActions()
-			Debug.log("[LB]["..self.global.name.."]Removing all actions")
+			Debug.info("[LB]["..self.global.name.."]Removing all actions")
 			self.global.actions = {action=nil, data=nil, name=nil}
 			self:rebalanceActions()
 		end
@@ -192,7 +192,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		function loadBalancer:rebalanceActions()
 			local count = #self.global.actions
 			self.global.temp_actions_per_tick = math.ceil(count/self.iteration_length)
-			--Debug.log("[LB]["..self.global.name.."]Rebalancing actions: count:"..count) --DEBUG
+			--Debug.info("[LB]["..self.global.name.."]Rebalancing actions: count:"..count) --DEBUG
 		end
 		
 		function loadBalancer:doAction(tick)
@@ -206,7 +206,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 			end
 			for i=startTick, startTick+self.global.actions_per_tick-1 do
 				if self.global.actions[i] then
-					--Debug.log("[LB]["..self.global.name.."]Executing action: "..self.global.actions[i].name) --DEBUG
+					--Debug.info("[LB]["..self.global.name.."]Executing action: "..self.global.actions[i].name) --DEBUG
 					local data = self.global.actions[i].action(self.global.actions[i].data)
 					if data then
 						self.global.actions.data = data
@@ -219,7 +219,7 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 			local tick = game.tick
 			if tick % self.iteration_length == self.global.tick_offset then
 				self.global.actions_per_tick = self.global.temp_actions_per_tick
-				--Debug.log("[LB]["..self.global.name.."]Setting new actions per tick: "..self.global.actions_per_tick) --DEBUG
+				--Debug.info("[LB]["..self.global.name.."]Setting new actions per tick: "..self.global.actions_per_tick) --DEBUG
 			end
 			self:doAction(tick)
 		end
@@ -227,11 +227,11 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 		return loadBalancer
 	end
 	
-	local errMessage = "[LB][ERROR]"
+	local errMessage = "[LB]"
 	if balancerName then
 		errMessage = errMessage.."["..balancerName.."]"
 	end
 	errMessage = errMessage.."Global table not found"
-	Debug.log(errMessage)
+	Debug.error(errMessage)
 	return nil
 end

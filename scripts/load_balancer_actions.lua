@@ -2,7 +2,7 @@
 -- @param player obj
 function updateRoundTime(player)
 	if verifyMainMenu(player) then
-		--Debug.log("Updating Round Time for "..player.name) --DEBUG
+		--Debug.info("Updating Round Time for "..player.name) --DEBUG
 		local timer = mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"]["Proxy_Wars_round_timer"]
 		local currentTime = global.round_time
 		timer.caption = formatRoundTime(currentTime)
@@ -18,7 +18,7 @@ end
 
 --Action to lower the round time
 function tickRoundTimeDown()
-	--Debug.log("Old round time: "..global.round_time) --DEBUG
+	--Debug.info("Old round time: "..global.round_time) --DEBUG
 	local currentTime = global.round_time - 1
 	if currentTime > 0 then
 		if currentTime == round_timer_warning then
@@ -35,7 +35,7 @@ end
 function roundTimeOut()
 	if global.last_fight_death then
 		if game.tick - global.last_fight_death > 1800 then
-			Debug.log("Round timeout")
+			Debug.info("Round timeout")
 			messageAll({"Proxy_Wars_fight_timeout"})
 			local finalPoints = {}
 			for teamName, biters in pairs(global.spawned_biters) do
@@ -45,7 +45,7 @@ function roundTimeOut()
 					teamPoints = teamPoints + (biterValue * amount)
 				end
 				finalPoints[teamName] = teamPoints
-				Debug.log(teamName.." ending the round with "..points)
+				Debug.info(teamName.." ending the round with "..points)
 				messageAll({"Proxy_Wars_fight_timeout_points", global.assigned_teams[teamName].name, teamPoints})
 			end
 			
@@ -76,17 +76,17 @@ function giveMoveCommandsGroup()
 			if unitGroup.state ~= 1 and unitGroup.state ~= 2 and unitGroup.state ~= 3 then
 				Debug.console("Giving command") --TODO
 				unitGroup.set_command({type=defines.command.attack_area, radius=10, destination={0,0}})
-				Debug.log(teamName.." biters are moving to 0,0")
+				Debug.info(teamName.." biters are moving to 0,0")
 				didWork = true
 			end
 			local n = 0
 			for _, biter in pairs(unitGroup.members) do
 				if biter.has_command then n = n + 1 end
 			end
-			--Debug.log("w/ commands:"..n)
+			--Debug.info("w/ commands:"..n)
 			unitGroup.start_moving()
 		else
-			Debug.log("Error with "..teamName.."'s unit group in arena")
+			Debug.info("Error with "..teamName.."'s unit group in arena")
 		end
 	end
 	
@@ -103,7 +103,7 @@ function giveMoveCommandsBiter(biter)
 	if entity and entity.valid then
 		local position = entity.position
 		if not movedCloserToCenter(entity, biter.lastPosition) then
-			Debug.log("A "..entity.force.name.." biter isn't moving closer")
+			Debug.info("A "..entity.force.name.." biter isn't moving closer")
 			biter.chances = biter.chances + 1
 		end
 		
@@ -139,10 +139,10 @@ function movedCloserToCenter(biter, lastPosition)
 		local flag = nil
 		
 		if currentX < lastX or currentY < lastY then
-			Debug.log("Moving closer:current("..currentX..","..currentY.."),last("..lastX..","..lastY..")")
+			Debug.info("Moving closer:current("..currentX..","..currentY.."),last("..lastX..","..lastY..")")
 			return true
 		else
-			Debug.log("NOT Moving closer:current("..currentX..","..currentY.."),last("..lastX..","..lastY..")")
+			Debug.info("NOT Moving closer:current("..currentX..","..currentY.."),last("..lastX..","..lastY..")")
 			return false
 		end
 	end

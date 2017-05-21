@@ -5,11 +5,11 @@ local sizeY = arena_size_y
 --Initialize the surfaces
 --Teams surfaces and arena
 function initializeSurfaces()
-	Debug.log("Initializing surfaces")
+	Debug.info("Initializing surfaces")
 	createArena()
 	
 	for _, name in ipairs(team_names) do
-		Debug.log("Creating surface "..name)
+		Debug.info("Creating surface "..name)
 		local surface = game.create_surface(name, global.map_gen_settings)
 		surface.request_to_generate_chunks({0, 0}, 6)
 		surface.regenerate_entity({
@@ -23,9 +23,9 @@ end
 
 --Initialize the forces
 function initializeForces()
-	Debug.log("Initializing forces")
+	Debug.info("Initializing forces")
 	for _, name in ipairs(team_names) do
-		Debug.log("Creating force "..name)
+		Debug.info("Creating force "..name)
 		local force = game.create_force(name)
 		force.chart("Proxy_Wars_Arena", {{-sizeX, -sizeY}, {sizeX, sizeY}})
 	end
@@ -61,7 +61,7 @@ end
 function assignTeam(player)
 	for _, teamName in ipairs(team_names) do
 		if not global.assigned_teams[teamName] then
-			Debug.log("Assigning "..player.name.." to team "..teamName)
+			Debug.info("Assigning "..player.name.." to team "..teamName)
 			global.assigned_teams[teamName] = player
 			global.player_list[player.name] = teamName
 			
