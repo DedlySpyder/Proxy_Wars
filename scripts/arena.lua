@@ -6,11 +6,23 @@ arena_radius = 100
 --Either spawns biters and starts fight or skips the round if not enough teams bought biters
 function startFightRound()
 	if spawnBiters() then
+		--Play a normal round
 		drawArenaButtonAll()
 		--global.secondly_balancer:addAction(giveMoveCommandsGroup, " ", "give_move_commands_group")
 	else
-		messageAll({"Proxy_Wars_fight_skip_round"})
-		startRound()
+		local teams, num = getTeamsWhoBoughtBiters()
+		if num == 1 then
+			--Only 1 person bought biters, give them the win
+			for team, _ in pairs(teams) do
+				global.spawned_biters[team] = global.bought_biters[team]
+				global.bought_biters[team] = getBlankBitersTable()
+				endRound(team)
+			end
+		else
+			--No one bought biters
+			messageAll({"Proxy_Wars_fight_skip_round"})
+			startRound()
+		end
 	end
 end
 
@@ -113,6 +125,28 @@ end
 --Determine the spawns for the fight round, based on the eligible teams
 -- @return table of [teamName] = spawnPosition
 function determineSpawns()
+	local teams, num = getTeamsWhoBoughtBiters()
+	if num > 1 then
+		Debug.log("There are "..num.." teams ready to start the round")
+		local spawns = calculateSpawnPoints(num)
+		local i = 1
+		for team, _ in pairs(teams) do
+			messageAll({"Proxy_Wars_fight_entering_fight", playerName})
+			Debug.log(playerName.." is entering the fight") 
+			teams[team] = spawns[i]
+			i = i + 1
+		end
+	else
+		Debug.log("There are only "..num.." teams ready to start the round")
+		return nil
+	end
+	return teams
+end
+
+--Get a list of all the teams who bought biters this round
+-- @return table of [teamName] = true
+--		   number of teams
+function getTeamsWhoBoughtBiters()
 	local teams = {}
 	local num = 0
 	for teamName, biters in pairs(global.bought_biters) do
@@ -123,25 +157,10 @@ function determineSpawns()
 		end
 		if teams[teamName] then 
 			local playerName = global.assigned_teams[teamName].name
-			messageAll({"Proxy_Wars_fight_entering_fight", playerName})
-			Debug.log(playerName.." is entering the fight") 
 			num = num + 1
 		end
 	end
-	
-	if num > 1 then
-		Debug.log("There are "..num.." teams ready to start the round")
-		local spawns = calculateSpawnPoints(num)
-		local i = 1
-		for team, _ in pairs(teams) do
-			teams[team] = spawns[i]
-			i = i + 1
-		end
-	else
-		Debug.log("There are only "..num.." teams ready to start the round")
-		return nil
-	end
-	return teams
+	return teams, num
 end
 
 --Calculate the spawn points for the num of provided teams
