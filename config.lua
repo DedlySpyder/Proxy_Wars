@@ -11,6 +11,9 @@ round_timer_yellow = 180
 --A warning will sound for all players and the clock will go red below this time (seconds)
 round_timer_warning = 60
 
+--This is the number of rounds that a game will last for
+game_length = 25
+
 team_names = {
 	"Player_1",
 	"Player_2",
