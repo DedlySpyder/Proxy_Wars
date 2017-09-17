@@ -11,6 +11,9 @@ round_timer_yellow = 180
 --A warning will sound for all players and the clock will go red below this time (seconds)
 round_timer_warning = 60
 
+--This is the number of rounds that a game will last for
+game_length = 25
+
 --This will increase the general speed of the match
 --This number is used to lower the requirements for recipes in both time and resources
 game_speed = 1

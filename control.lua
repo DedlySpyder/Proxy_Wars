@@ -40,6 +40,8 @@ script.on_init(function()
 	global.round_time = global.round_time or 0
 	global.last_fight_death = global.last_fight_death or nil
 	
+	global.current_round = global.current_round or 0
+	
 	generateValues()
 	initializeSurfaces()
 	initializeForces()

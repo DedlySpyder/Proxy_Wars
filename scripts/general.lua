@@ -2,6 +2,7 @@
 function startRound()
 	Debug.log("Starting round")
 	global.round_time = round_length * 60
+	global.current_round = global.current_round + 1
 end
 
 --Cleanup after the fight round is finished
@@ -44,7 +45,39 @@ function endRound(winner)
 		
 		global.biter_groups[teamName] = nil
 	end
-	startRound()
+	
+	if global.current_round < game_length then
+		--Game not over yet
+		startRound()
+	elseif gameTied() then
+		--Game is tied
+		messageAll({Proxy_Wars_game_tied})
+		startRound()
+	else
+		--Game is over
+		messageAll({"Proxy_Wars_ending_game"})
+		messageAll({"Proxy_Wars_game_winner", global.points[1].player})
+		
+		--Reset the timer and kill the on_tick event
+		global.round_time = 0
+		for _, player in pairs(game.players) do
+			updateRoundTime(player)
+		end
+		script.on_event(defines.events.on_tick, nil)
+	end
+end
+
+--Checks if first and second have the same points
+-- @return true or false
+function gameTied()
+	sortPoints()
+	
+	--Make sure there is not a tie for first
+	if global.points[1] and global.points[2] and global.points[1].points == global.points[2].points then
+		return true
+	end
+	
+	return false
 end
 
 --Get an empty biters table
