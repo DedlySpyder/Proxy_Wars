@@ -1,19 +1,3 @@
---This is the minimum time to wait before the host can start the game (seconds) 
---Less than ~20 seconds will mean that the individual surfaces are not fully loaded
-wait_before_start = 20
-
---This is the length between each round of fighting (minutes)
-round_length = 10
-
---The clock will turn yellow below this time (seconds)
-round_timer_yellow = 180
-
---A warning will sound for all players and the clock will go red below this time (seconds)
-round_timer_warning = 60
-
---This is the number of rounds that a game will last for
-game_length = 25
-
 team_names = {
 	"Player_1",
 	"Player_2",

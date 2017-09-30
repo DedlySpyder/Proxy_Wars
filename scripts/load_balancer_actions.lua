@@ -6,9 +6,9 @@ function updateRoundTime(player)
 		local timer = mod_gui.get_frame_flow(player)["Proxy_Wars_main_frame"]["Proxy_Wars_round_timer"]
 		local currentTime = global.round_time
 		timer.caption = formatRoundTime(currentTime)
-		if currentTime == round_timer_warning then
+		if currentTime == settings.global["Proxy_Wars_round_timer_alert"].value then
 			timer.style.font_color = {r = 1, g = 0, b = 0, a = 0.8}
-		elseif currentTime == round_timer_yellow then
+		elseif currentTime == settings.global["Proxy_Wars_round_timer_warning"].value then
 			timer.style.font_color = {r = 1, g = 1, b = 0.2,  a = 0.8}
 		elseif currentTime == 0 then
 			timer.style.font_color = {r = 1, g = 1, b = 1, a = 1}
@@ -21,7 +21,7 @@ function tickRoundTimeDown()
 	--Debug.info("Old round time: "..global.round_time) --DEBUG
 	local currentTime = global.round_time - 1
 	if currentTime > 0 then
-		if currentTime == round_timer_warning then
+		if currentTime == settings.global["Proxy_Wars_round_timer_alert"].value then
 			soundKlaxonAll()
 		end
 		global.round_time = currentTime

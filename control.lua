@@ -88,6 +88,7 @@ script.on_event(defines.events.on_runtime_mod_setting_changed, on_runtime_mod_se
 --Replaced when the Proxy Wars game actually starts
 function waiting_for_players()
 	if game.tick ~= 0 then
+		local wait_before_start = settings.global["Proxy_Wars_wait_before_start"].value
 		if wait_before_start > 0 then
 			if game.tick % (wait_before_start * 60) == 0 then
 				drawStartButton()
@@ -118,6 +119,7 @@ function on_player_created(event)
 		player.print({"Proxy_Wars_assigned_team", global.player_list[player.name]})
 		player.print({"Proxy_Wars_warning_dropping"})
 		
+		local wait_before_start = settings.global["Proxy_Wars_wait_before_start"].value
 		if wait_before_start > 0 then
 			player.print({"Proxy_Wars_waiting_for_start", wait_before_start})
 		end

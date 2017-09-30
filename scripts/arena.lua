@@ -10,6 +10,9 @@ function startFightRound()
 		drawArenaButtonAll()
 		--global.secondly_balancer:addAction(giveMoveCommandsGroup, " ", "give_move_commands_group")
 	else
+		for _, player in pairs(game.players) do
+			updateRoundTime(player)
+		end
 		local teams, num = getTeamsWhoBoughtBiters()
 		if num == 1 then
 			--Only 1 person bought biters, give them the win

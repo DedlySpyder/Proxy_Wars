@@ -1,7 +1,7 @@
 --Reset the timer
 function startRound()
 	Debug.info("Starting round")
-	global.round_time = round_length * 60
+	global.round_time = settings.global["Proxy_Wars_round_length"].value * 60
 	global.current_round = global.current_round + 1
 end
 
@@ -46,7 +46,7 @@ function endRound(winner)
 		global.biter_groups[teamName] = nil
 	end
 	
-	if global.current_round < game_length then
+	if global.current_round < settings.global["Proxy_Wars_game_length"].value then
 		--Game not over yet
 		startRound()
 	elseif gameTied() then
