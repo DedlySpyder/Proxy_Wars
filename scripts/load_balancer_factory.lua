@@ -25,10 +25,10 @@ Load_Balancer_Factory = {}
 
 --Default Values
 --This will complete the ticks every this many ticks
-Load_Balancer_Factory.iteration_length = 60
+Load_Balancer_Factory.ITERATION_LENGTH = 60
 
 --Default name when an action name is not supplied
-Load_Balancer_Factory.default_name = "Action_"
+Load_Balancer_Factory.DEFAULT_NAME = "Action_"
 
 
 --This function is called to create a load balancer instance
@@ -40,8 +40,8 @@ function Load_Balancer_Factory.create(balancerName, globalTable, iterationLength
 	if globalTable then
 		local loadBalancer = {}
 		
-		loadBalancer.iteration_length = iterationLength or Load_Balancer_Factory.iteration_length
-		loadBalancer.default_name = defaultName or Load_Balancer_Factory.default_name
+		loadBalancer.iteration_length = iterationLength or Load_Balancer_Factory.ITERATION_LENGTH
+		loadBalancer.default_name = defaultName or Load_Balancer_Factory.DEFAULT_NAME
 		loadBalancer.global = globalTable
 		
 		Debug.info("[LB]Creating new load balancer: "..balancerName)

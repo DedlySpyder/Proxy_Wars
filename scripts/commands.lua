@@ -1,9 +1,9 @@
 remote.add_interface("Proxy_Wars_debug", {
 	-- /c remote.call("Proxy_Wars_debug", "change_surface", "")
 	change_surface = function(surface)
-		if debug_mode then
+		if debug_mode then --TODO - config migration
 			local player = game.player
-			if teleportPlayer(player, surface) then
+			if Surfaces.TeleportPlayer(player, surface) then
 				player.print("Teleported to "..surface)
 			else
 				player.print("Teleport to "..surface.." failed")
@@ -13,7 +13,7 @@ remote.add_interface("Proxy_Wars_debug", {
 	
 	-- /c remote.call("Proxy_Wars_debug", "check_force")
 	check_force = function()
-		if debug_mode then
+		if debug_mode then --TODO - config migration
 			local player = game.player
 			local force = player.force
 			player.print("Your force is "..force.name)
@@ -29,7 +29,7 @@ remote.add_interface("Proxy_Wars_debug", {
 	
 	-- /c remote.call("Proxy_Wars_debug", "give_chests")
 	give_chests = function()
-		if debug_mode then
+		if debug_mode then --TODO - config migration
 			game.player.insert({name="sell-chest-proxy-wars", count=20})
 		end
 	end

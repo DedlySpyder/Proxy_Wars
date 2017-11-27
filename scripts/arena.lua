@@ -1,53 +1,90 @@
-arena_size_x = 200
-arena_size_y = 200
-arena_radius = 100
+Arena = {}
 
---Attempts to start the current round of fighting
---Either spawns biters and starts fight or skips the round if not enough teams bought biters
-function startFightRound()
-	if spawnBiters() then
-		--Play a normal round
-		drawArenaButtonAll()
-		--global.secondly_balancer:addAction(giveMoveCommandsGroup, " ", "give_move_commands_group")
+Arena.SURFACE_NAME = "Proxy_Wars_Arena"
+Arena.SIZE = 200
+Arena.RADIUS = Arena.SIZE / 2
+
+--Create the arena surface
+Arena.Create = function()
+	local size = Arena.SIZE
+	local arena = game.create_surface(Arena.SURFACE_NAME, {width = size, height = size})
+	
+	local tiles = {}
+	for x=-size, size do
+		for y=-size, size do
+			table.insert(tiles, {name="grass", position={x, y}})
+		end
+	end
+	arena.set_tiles(tiles, false)
+	
+	local chunks = {}
+	for x=math.floor(-size/32), math.floor(size/32) do
+		for y=math.floor(-size/32), math.floor(size/32) do
+			table.insert(chunks, {x, y})
+		end
+	end
+	for _, chunk in ipairs(chunks) do
+		arena.set_chunk_generated_status(chunk, defines.chunk_generated_status.entities)
+	end
+	arena.always_day = true
+end
+
+Arena.Spectate = {}
+--Toggle the spectating state of a player
+-- @param player obj
+Arena.Spectate.Toggle = function(player)
+	if global.player_at_arena[player.name] then
+		Arena.Spectate.Leave(player)
 	else
-		for _, player in pairs(game.players) do
-			updateRoundTime(player)
-		end
-		local teams, num = getTeamsWhoBoughtBiters()
-		if num == 1 then
-			--Only 1 person bought biters, give them the win
-			for team, _ in pairs(teams) do
-				global.spawned_biters[team] = global.bought_biters[team]
-				global.bought_biters[team] = getBlankBitersTable()
-				endRound(team)
-			end
-		else
-			--No one bought biters
-			messageAll({"Proxy_Wars_fight_skip_round"})
-			startRound()
-		end
+		Arena.Spectate.Join(player)
 	end
 end
 
 --Send a player to the arena (while leaving their character behind)
+--If no player is provided then it will run on all players
 -- @param player obj
-function spectateArena(player)
-	global.player_at_arena[player.name] = true
-	global.characters[player.name] = player.character
-	player.character = nil
-	teleportPlayer(player, "Proxy_Wars_Arena")
+Arena.Spectate.Join = function(player)
+	if not player then
+		for _, p in pairs(game.players) do
+			Arena.Spectate.Join(p)
+		end
+		return nil
+	end
+	
+	if not global.player_at_arena[player.name] then
+		global.characters[player.name] = player.character
+		player.character = nil
+		if Surfaces.TeleportPlayer(player, Arena.SURFACE_NAME) then
+			global.player_at_arena[player.name] = true
+		else
+			player.print("Couldn't spectate") --TODO - handle this somehow?
+		end
+	end
 end
 
 --Send a player back to their character and surface
--- @param player obj
-function stopSpectatingArena(player)
-	global.player_at_arena[player.name] = false
-	teleportPlayer(player, global.player_list[player.name])
-	player.character = global.characters[player.name]
+--If no player is provided then it will run on all players
+-- @param player obj (if not provided then it will be applied to all players)
+Arena.Spectate.Leave = function(player)
+	if not player then
+		for _, p in pairs(game.players) do
+			Arena.Spectate.Leave(p)
+		end
+		return nil
+	end
+	
+	if global.player_at_arena[player.name] then
+		if Surfaces.TeleportPlayer(player, global.player_list[player.name]) then
+			player.character = global.characters[player.name]
+			global.player_at_arena[player.name] = false
+		else
+			player.print("Couldn't stop spectating") --TODO - handle this somehow?
+		end
+	end
 end
 
 --Check the participants to see if only one (or none in a draw) remain
-function checkForWinner()
+Arena.CheckForWinner = function()
 	local participants = {}
 	local num = 0
 	for teamName, biters in pairs(global.spawned_biters) do
@@ -71,70 +108,26 @@ function checkForWinner()
 	Debug.info("There are still "..num.." team(s) in the fight.")
 	
 	if num == 0 then
-		messageAll({"Proxy_Wars_fight_result_draw"})
+		Utils.MessageAll({"Proxy_Wars_fight_result_draw"})
 		Debug.info("Fight round ending in a draw")
-		endRound()
+		Round.End()
 	elseif num == 1 then
 		for winner, _ in pairs(participants) do
-			endRound(winner)
+			Round.End(winner)
 		end
 	end
-end
-
---Spawn biters for this round of fighting
--- @return true or false if biters were spawned
-function spawnBiters()
-	local arena = game.surfaces["Proxy_Wars_Arena"]
-	local spawns = determineSpawns()
-	local bought_biters = global.bought_biters
-	
-	--Spawn biters only if enough teams are ready
-	if spawns then
-		for teamName, spawnPosition in pairs(spawns) do
-			local force = game.forces[teamName]
-			local unitGroup = arena.create_unit_group{position=spawnPosition, force=force}
-			local spawnZoneRadius = (arena_radius * 0.1) * 2
-			for biter, amount in pairs(bought_biters[teamName]) do
-				local spawned = 0
-				for i=1, amount do
-					local position = arena.find_non_colliding_position(biter, spawnPosition, spawnZoneRadius, 0.1)
-					if position then
-						local biter = arena.create_entity{name=biter, position=position, force=force}
-						unitGroup.add_member(biter)
-						--biter.set_command({type=defines.command.attack_area, radius=10, destination={0,0}})
-						--table.insert(global.spawned_biters[teamName], biter)
-						
-						local actionData = {entity=biter, lastPosition=biter.position, chances=0}
-						--global.secondly_balancer:addAction(giveMoveCommandsBiter, actionData, "give_move_commands_biter_"..force.name.."_"..spawned)
-						
-						spawned = spawned + 1
-					end
-				end
-				global.spawned_biters[teamName][biter] = spawned
-				global.bought_biters[teamName][biter] = amount - spawned
-				Debug.info("Spawned "..spawned.." "..biter.."(s) at position ("..spawnPosition.x..", "..spawnPosition.y..") for "..teamName)
-			end
-			unitGroup.set_command({type=defines.command.go_to_location, destination={0,0}, distraction=defines.distraction.by_damage})
-			global.biter_groups[teamName] = unitGroup
-			--Debug.info("Biter Group:# - "..#global.biter_groups[teamName].members)
-		end
-		global.last_fight_death = nil
-		global.secondly_balancer:addAction(roundTimeOut, " ", "round_timeout")
-		return true
-	end
-	return false
 end
 
 --Determine the spawns for the fight round, based on the eligible teams
 -- @return table of [teamName] = spawnPosition
-function determineSpawns()
-	local teams, num = getTeamsWhoBoughtBiters()
+Arena.DetermineSpawns = function()
+	local teams, num = Arena.GetTeamsWhoBoughtBiters()
 	if num > 1 then
 		Debug.info("There are "..num.." teams ready to start the round")
-		local spawns = calculateSpawnPoints(num)
+		local spawns = Arena.CalculateSpawnPoints(num)
 		local i = 1
 		for team, _ in pairs(teams) do
-			messageAll({"Proxy_Wars_fight_entering_fight", playerName})
+			Utils.MessageAll({"Proxy_Wars_fight_entering_fight", playerName})
 			Debug.info(playerName.." is entering the fight") 
 			teams[team] = spawns[i]
 			i = i + 1
@@ -148,8 +141,8 @@ end
 
 --Get a list of all the teams who bought biters this round
 -- @return table of [teamName] = true
---		   number of teams
-function getTeamsWhoBoughtBiters()
+-- @return number of teams
+Arena.GetTeamsWhoBoughtBiters = function()
 	local teams = {}
 	local num = 0
 	for teamName, biters in pairs(global.bought_biters) do
@@ -169,16 +162,16 @@ end
 --Calculate the spawn points for the num of provided teams
 -- @param num number of spawn points to calculate
 -- @return table of spawn points
-function calculateSpawnPoints(num)
-	local spawnRadius = arena_radius * 0.9
+Arena.CalculateSpawnPoints = function(num)
+	local spawnRadius = Arena.RADIUS * 0.9
 	local twoPi = 2 * math.pi
 	local spawnPoints = {}
 	local i = 0
 	
 	for a=0, twoPi, twoPi/num do
 		if i < num then
-			local x = round(math.cos(a) * spawnRadius)
-			local y = round(math.sin(a) * spawnRadius)
+			local x = Utils.RoundToDecimal(math.cos(a) * spawnRadius)
+			local y = Utils.RoundToDecimal(math.sin(a) * spawnRadius)
 			table.insert(spawnPoints, {x=x, y=y})
 			Debug.info("Calculating spawn point at ("..x..", "..y..")")
 		end

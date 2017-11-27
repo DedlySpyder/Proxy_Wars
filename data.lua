@@ -4,6 +4,8 @@ require("styles/help")
 require("styles/scoreboard")
 require("styles/value_list")
 require("styles/buy_biters")
+require("styles/tab_lib")
+
 require("prototypes/gui")
 require("prototypes/hotkeys")
 require("prototypes/biters")

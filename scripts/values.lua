@@ -1,5 +1,9 @@
+--TODO - this could maybe use a rewrite in general?
+
+Values = {}
+
 --Generate the values
-function generateValues()
+Values.Generate = function()
 	local force = game.forces["player"]
 	
 	--Get item names
@@ -16,7 +20,7 @@ function generateValues()
 	--Get tech values 
 	--[[
 	for name, tech in pairs(force.technologies) do
-		generateTechValue(tech)
+		Values.GenerateTechValue(tech)
 	end
 	]]
 	
@@ -37,12 +41,12 @@ function generateValues()
 		newValues = false
 		
 		--Generate a value if possible for each recipe
-		for itemName, recipes in pairs(product_table) do
+		for itemName, recipes in ipairs(product_table) do
 			for _, recipe in pairs(recipes) do
-				if generateValueFromRecipe(itemName, recipe) then
-					local testFunc = function(arg) return arg.name == recipe.name end
+				if Values.GenerateValueFromRecipe(itemName, recipe) then
+					local testFunc = function(arg) return arg.name ~= recipe.name end
 					
-					product_table[itemName] = removeFromTable(testFunc, recipes)
+					product_table[itemName] = Utils.Table.iFilterByValue(recipes, testFunc) --TODO - migration - IS THIS GOOD???
 				end
 			end
 		end
@@ -64,29 +68,112 @@ function generateValues()
 	--Remove the unneeded items
 	for name, prototype in pairs(game.item_prototypes) do
 		if prototype.has_flag("hidden") then
-			local func = function(arg) return arg == name end
-			global.item_values = removeFromTableWithKey(func, global.item_values)
+			local func = function(arg) return arg ~= name end
+			global.item_values = Utils.Table.Filter.ByKey(global.item_values, func) --TODO - migration - IS THIS GOOD???
 		end
 	end
 	
 	--Remove the fluids
 	for name, prototype in pairs(game.fluid_prototypes) do
-		local func = function(arg) return arg == name end
+		local func = function(arg) return arg ~= name end
 		
-		global.item_values = removeFromTableWithKey(func, global.item_values)
+		global.item_values = Utils.Table.Filter.ByKey(global.item_values, func) --TODO - migration - IS THIS GOOD???
 	end
 	
 	--Log the value list
-	printValueList()
+	Values.LogList()
 end
+
+--Return true if generated new value
+--Put the value in temp_values table
+--This recipe is being used to generate a value for itemName
+-- @param itemName string
+-- @param recipe obj
+-- @return true or false if a value was generated
+-- Side Effect: put the generated value into temp_values
+Values.GenerateValueFromRecipe = function(itemName, recipe)
+	local price = 0
+	for _, ingredient in pairs(recipe.ingredients) do
+		local ingredientName = ingredient.name
+		
+		if global.item_values[ingredientName] == 0 then return false end
+		
+		--Calculate the base value
+		local baseValue = global.item_values[ingredientName] * ingredient.amount * ingredient_modifier --TODO - config migration
+		
+		--Calculate the tech value
+		--local techValue = global.recipe_tech_values[ingredientName] * tech_level_modifier
+		
+		price = price + baseValue-- + techValue
+	end
+	
+	--Calculate the energy value
+	local energyValue = recipe.energy * energy_modifier --TODO - config migration
+	
+	--Finalize the price
+	price = price * energyValue
+	price = price * overall_modifier --TODO - config migration
+	
+	--Assign the value or split it based on different products
+	local products = recipe.products
+	if #products == 1 then
+		local product = products[1]
+		if product.name == itemName then
+			temp_values[itemName] = math.ceil(price/Values.GetProductAmount(product))
+		end
+	else
+		local totalAmount = 0
+		for _, product in ipairs(products) do
+			totalAmount = totalAmount + Values.GetProductAmount(product)
+		end
+		
+		for _, product in ipairs(products) do
+			if product.name == itemName then
+				temp_values[itemName] = math.ceil(price/(Values.GetProductAmount(product)/totalAmount))
+			end
+		end
+	end
+	return true
+end
+
+--Get the product's amount based on factors within the product
+-- @param product obj
+-- @return product amount
+Values.GetProductAmount = function(product)
+	local probability = product.probability or 1
+			
+	if product.amount then
+		return product.amount
+	else
+		return (product.amount_max - product.amount_min) * probability
+	end
+end
+
+--Logs the value list 
+Values.LogList = function()
+	Debug.log_no_tick("Item"..Values.GetSpacing(4).."| Price")
+	for name, price in pairs(global.item_values) do
+		Debug.log_no_tick(name..Values.GetSpacing(#name)..price)
+	end
+end
+
+--Spacing for value list log
+Values.GetSpacing = function(length)
+	local s = ""
+	for i=1, 50-length do
+		s = s.." "
+	end
+	return s
+end
+
 --[[
-function generateTechValue(tech)
+Values.GenerateTechValue = function(tech)
 	local value = 0
 	for name, prerequisite in pairs(tech.prerequisites) do
 		if global.tech_values[name] then
 			value = global.tech_values[name] + 1
 		else
-			value = generateTechValue(prerequisite) + 1
+			value = Values.GenerateTechValue(prerequisite) + 1
 		end
 	end
 	Debug.info(tech.name)
@@ -101,85 +188,3 @@ function generateTechValue(tech)
 	return value
 end
 ]]
-
---Return true if generated new value
---Put the value in temp_values table
---This recipe is being used to generate a value for itemName
--- @param itemName string
--- @param recipe obj
--- @return true or false if a value was generated
--- Side Effect: put the generated value into temp_values
-function generateValueFromRecipe(itemName, recipe)
-	local price = 0
-	for _, ingredient in pairs(recipe.ingredients) do
-		local ingredientName = ingredient.name
-		
-		if global.item_values[ingredientName] == 0 then return false end
-		
-		--Calculate the base value
-		local baseValue = global.item_values[ingredientName] * ingredient.amount * ingredient_modifier
-		
-		--Calculate the tech value
-		--local techValue = global.recipe_tech_values[ingredientName] * tech_level_modifier
-		
-		price = price + baseValue-- + techValue
-	end
-	
-	--Calculate the energy value
-	local energyValue = recipe.energy * energy_modifier
-	
-	--Finalize the price
-	price = price * energyValue
-	price = price * overall_modifier
-	
-	--Assign the value or split it based on different products
-	local products = recipe.products
-	if #products == 1 then
-		local product = products[1]
-		if product.name == itemName then
-			temp_values[itemName] = math.ceil(price/getProductAmount(product))
-		end
-	else
-		local totalAmount = 0
-		for _, product in ipairs(products) do
-			totalAmount = totalAmount + getProductAmount(product)
-		end
-		
-		for _, product in ipairs(products) do
-			if product.name == itemName then
-				temp_values[itemName] = math.ceil(price/(getProductAmount(product)/totalAmount))
-			end
-		end
-	end
-	return true
-end
-
---Get the product's amount based on factors within the product
--- @param product obj
--- @return product amount
-function getProductAmount(product)
-	local probability = product.probability or 1
-			
-	if product.amount then
-		return product.amount
-	else
-		return (product.amount_max - product.amount_min) * probability
-	end
-end
-
---Logs the value list 
-function printValueList()
-	Debug.log_no_tick("Item"..getSpacing(4).."| Price")
-	for name, price in pairs(global.item_values) do
-		Debug.log_no_tick(name..getSpacing(#name)..price)
-	end
-end
-
---Spacing for value list log
-function getSpacing(length)
-	local s = ""
-	for i=1, 50-length do
-		s = s.." "
-	end
-	return s
-end
