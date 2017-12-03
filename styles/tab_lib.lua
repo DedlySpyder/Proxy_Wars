@@ -26,3 +26,10 @@ data.raw["gui-style"].default["Proxy_Wars_tab_nav_inactive"] =
 	height = 35,
 	top_padding = 0
 }
+
+data.raw["gui-style"].default["Proxy_Wars_tab_flow"] =
+{
+	type = "flow_style",
+	height = 500,
+	width = 565
+}
