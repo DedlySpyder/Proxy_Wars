@@ -100,10 +100,10 @@ Control.waiting_for_players = function()
 		local wait_before_start = settings.global["Proxy_Wars_wait_before_start"].value
 		if wait_before_start > 0 then
 			if game.tick % (wait_before_start * 60) == 0 then
-				drawStartButton()
+				GUI.StartButton.Draw()
 			end
 		else
-			drawStartButton()
+			GUI.StartButton.Draw()
 		end
 	end
 end
