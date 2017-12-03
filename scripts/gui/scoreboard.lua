@@ -1,14 +1,11 @@
 --~~~~~~~~~~ Scoreboard GUI ~~~~~~~~~~--
+
+--This tab shows the scores of all players in the game
+--The viewing player is a different color
+
 GUI.Scoreboard = {}
 GUI.Scoreboard.NAME = "Proxy_Wars_view_scoreboard"
 GUI.Scoreboard.TAB_NAME = "scoreboard"
-
-GUI.Scoreboard.Create = function(player)
-	data = GUI.MainMenu.GetTabData(player)
-	data["active"] = GUI.Scoreboard.TAB_NAME
-	
-	Utils.TabLib.Create(data)
-end
 
 GUI.Scoreboard.Destroy = function(player)
 	data = GUI.MainMenu.GetTabData(player)
@@ -16,6 +13,7 @@ GUI.Scoreboard.Destroy = function(player)
 	Utils.TabLib.Destroy(data)
 end
 
+--See Utils.TabLib.Toggle for more info
 GUI.Scoreboard.OnToggle = function(event)
 	local player = game.players[event.player_index]
 	data = GUI.MainMenu.GetTabData(player)

@@ -1,5 +1,6 @@
 Surfaces = {}
 
+--Accuracy of TeleportPlayer
 Surfaces.TELEPORT_ACCURACY = 20
 
 --Initialize the surfaces

@@ -36,6 +36,8 @@ PW_Game.AssignTeam = function(player)
 	return false
 end
 
+--Start the Proxy Wars game
+--Sends each player to their surface, cleans up pre-game GUI, and starts the first round
 PW_Game.StartGame = function()
 	for playerName, surfaceName in pairs(global.player_list) do
 		if playerName then

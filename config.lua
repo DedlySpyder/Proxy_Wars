@@ -1,3 +1,5 @@
+--TODO - replace this file with a tabbed menu for the host
+
 team_names = {
 	"Player_1",
 	"Player_2",

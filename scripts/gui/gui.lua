@@ -5,6 +5,7 @@ require "start_button"
 require "main_menu" --Main menu requires its tabs
 require "top_menu"
 
+--Initialize all events for the different GUI elements
 GUI.Init = function()
 	--Arena Button
 	Utils.Events.GUI.Add(GUI.ArenaButton.NAME, GUI.ArenaButton.OnClick)

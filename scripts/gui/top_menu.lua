@@ -1,3 +1,7 @@
+--~~~~~~~~~~ Top Menu GUI ~~~~~~~~~~--
+
+--This GUI holds the round timer and the different buttons that the players use to open the main menu tabs
+
 GUI.TopMenu = {}
 GUI.TopMenu.NAME = "Proxy_Wars_top_menu"
 
@@ -51,6 +55,7 @@ GUI.TopMenu.Draw = function(player)
 	return false
 end
 
+--Only players will have a buy biters tab (if I ever add spectators)
 GUI.TopMenu.AddPlayerButtons = function(player)
 	if not player then
 		for _, p in pairs(game.players) do

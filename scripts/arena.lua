@@ -30,6 +30,7 @@ Arena.Create = function()
 end
 
 Arena.Spectate = {}
+
 --Toggle the spectating state of a player
 -- @param player obj
 Arena.Spectate.Toggle = function(player)

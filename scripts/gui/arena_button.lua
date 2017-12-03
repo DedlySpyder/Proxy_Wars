@@ -25,7 +25,7 @@ GUI.ArenaButton.Draw = function(player)
 	end
 end
 
---Toggle the Arena Button
+--Toggle the Arena Button between go to arena, and leave arena
 GUI.ArenaButton.Toggle = function(player)
 	local buttonFlow = mod_gui.get_button_flow(player)
 	if global.player_at_arena[player.name] then
@@ -61,6 +61,7 @@ GUI.ArenaButton.Verify = function(player)
 	return false
 end
 
+--On click handler for arena button
 GUI.ArenaButton.OnClick = function(event)
 	local player = game.players[event.player_index]
 	

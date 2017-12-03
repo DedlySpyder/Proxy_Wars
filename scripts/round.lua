@@ -3,6 +3,7 @@ Round = {}
 --How long a fight will last without biter kills before the fight ends
 Round.FIGHT_TIMEOUT = 60*30
 
+--Start the Proxy Wars round (not the fight section of the round)
 Round.Start = function()
 	Debug.info("Starting round")
 	global.round_time = settings.global["Proxy_Wars_round_length"].value * 60

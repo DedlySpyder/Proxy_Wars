@@ -1,8 +1,23 @@
 --[[
-Parameters:
+This library is to make a GUI that has tab buttons running along the top, and when the player selects one it will change to a different tab. This switching functionality for those buttons is handled within the library itself.
+The TabLib data and functions must be stored as a predefined variable/function, or else the GUI will not survive a save/load cycle
+	Note: the actual data object provided can be a deepcopy of that original data, as long as it is hardcoded somewhere
+	
+	i.e. you CANNOT call something like this Utils.TabLib.Create( {...} )
+		 that object must be a reference to it somewhere as a global variable
+
+		Version 0.0.1
+		Made by DedlySpyder
+
+	SetUp
+		- Call Utils.TabLib.Init() in your script.on_init()
+		- Requires my events library be loaded (see scripts/utils/events)
+
+All of the TabLib methods require a data object, as described below:
+Data Object:
 	Required:
 		name - Name of the tab GUI object
-		navButtons - Array of tables {name="", caption=""}
+		navButtons - Array of the following tables {name="", caption=""}
 		tabs - Table of functions that are given keys that match a navButton name
 			 - These functions will be provided the flow of the tab to add elements to
 		
@@ -11,7 +26,7 @@ Parameters:
 		parent - Factorio GUI object
 		
 	Optional:
-		active - name of the active tab
+		active - name of the active tab (default will be the first tab)
 		
 Example:
 	GUI.TabLib.Create{
@@ -57,11 +72,16 @@ Utils.TabLib.Init = function()
 	global.TabLibData = global.TabLibData or {}
 end
 
+--Debugging for the TabLib
+--If you're not using my debugger as well, then you'll want to change this to use your own
 Utils.TabLib.Debug = function(message)
 	Debug.info("[TabLib]"..message)
 end
 
+--Create the tabbed GUI
 --If it already exists then switch to the active tab
+-- @param d data object
+-- @param verified for internal use only, to only verify the data once
 Utils.TabLib.Create = function(d, verified)
 	d.verified = verified
 	local data = Utils.TabLib.VerifyData(d)
@@ -77,7 +97,9 @@ Utils.TabLib.Create = function(d, verified)
 	end
 end
 
---Either create the whole GUI if it doesn't exist, destroy it if the active tab matches the data, or switch to the data.active
+--Either create the whole GUI if it doesn't exist or if it doesn't exist destroy it if the active tab matches the data.active or switch to the data.active
+-- @param d data object
+-- @param verified for internal use only, to only verify the data once
 Utils.TabLib.Toggle = function(d, verified)
 	d.verified = verified
 	local data = Utils.TabLib.VerifyData(d)
@@ -96,6 +118,9 @@ Utils.TabLib.Toggle = function(d, verified)
 	end
 end
 
+--Switch to the data.active tab
+-- @param d data object
+-- @param verified for internal use only, to only verify the data once
 Utils.TabLib.Switch = function(d, verified)
 	d.verified = verified
 	local data = Utils.TabLib.VerifyData(d)
@@ -109,6 +134,9 @@ Utils.TabLib.Switch = function(d, verified)
 	end
 end
 
+--Refresh the tabbed GUI to the data.active tab
+-- @param d data object
+-- @param verified for internal use only, to only verify the data once
 Utils.TabLib.Refresh = function(d, verified)
 	d.verified = verified
 	local data = Utils.TabLib.VerifyData(d)
@@ -122,6 +150,9 @@ Utils.TabLib.Refresh = function(d, verified)
 	end
 end
 
+--Destroy the whole tabbed GUI
+-- @param d data object
+-- @param verified for internal use only, to only verify the data once
 Utils.TabLib.Destroy = function(d, verified)
 	d.verified = verified
 	local data = Utils.TabLib.VerifyData(d)
@@ -135,6 +166,8 @@ Utils.TabLib.Destroy = function(d, verified)
 	end
 end
 
+--Draw the whole tabbed GUI
+-- @param data object
 Utils.TabLib.Draw = function(data)
 	Utils.TabLib.Debug("Drawing "..data.active.." tab for "..data.name)
 	local mainFrame = data.parent.add{type="frame", name=data.name, direction="vertical"}
@@ -155,16 +188,23 @@ Utils.TabLib.Draw = function(data)
 	global.TabLibData[data.name][data.player.name] = data
 end
 
+--Register all of the event using my events library (found in scripts/utils/events.lua)
+-- @param data object
 Utils.TabLib.RegisterEvents = function(data)
 	for _, navButton in pairs(data.navButtons) do
 		Utils.Events.GUI.Add(Utils.TabLib.NavButtonName(navButton, data), Utils.TabLib.Events.OnGuiClicked)
 	end
 end
 
+--Internal function to calculate the navigation button name
+-- @param navButton table
+-- @param data obj
 Utils.TabLib.NavButtonName = function(navButton, data)
 	return data.name.."_nav_"..navButton.name
 end
 
+--The on clicked event that will be used for each tab navigation button click
+-- @param event obj from Factorio
 Utils.TabLib.Events = {}
 Utils.TabLib.Events.OnGuiClicked = function(event)
 	local element = event.element
@@ -178,6 +218,8 @@ Utils.TabLib.Events.OnGuiClicked = function(event)
 	end
 end
 
+--Verify if the tabbed GUI exists
+-- @param data object
 Utils.TabLib.Verify = function(data)
 	if data.parent[data.name] then
 		return true
@@ -185,6 +227,8 @@ Utils.TabLib.Verify = function(data)
 	return false
 end
 
+--Verify if the tabbed GUI exists and if the current tab is the data.active tab
+-- @param data object
 Utils.TabLib.VerifyActive = function(data)
 	if Utils.TabLib.Verify(data) then
 		for _, navButton in pairs(data.parent[data.name][data.name.."_nav"].children) do
@@ -199,6 +243,8 @@ Utils.TabLib.VerifyActive = function(data)
 	return false
 end
 
+--Verify and clean up the given data obj
+-- @param d data object
 Utils.TabLib.VerifyData = function(d)
 	local data = Utils.Table.Deepcopy(d)
 	if data and data.name and data.navButtons and data.tabs then

@@ -4,10 +4,17 @@
 This Utils will accept the name of a gui element and a function to use when the event for clicking that element is thrown
 
 The function will be given the event from Factorio
+The function must exist as a predefined function somewhere in your code
+i.e. you can't call Utils.Events.GUI.Add("GUI_name", function(event) ... end), and it will not survive a save/load game
+
+	Setup:
+		- Call Utils.Events.GUI.Init() in your script.on_init()
+		- Call Utils.Events.GUI.OnGuiClicked(event) in your defines.events.on_gui_click event handler (or register it instead of your own handler)
 ]]--
 
 Utils.Events = {}
 Utils.Events.GUI = {}
+
 Utils.Events.GUI.Init = function()
 	global.UtilsGuiEvents = global.UtilsGuiEvents or {} --[name] = callback_function
 	global.UtilsGuiEventsPartial = global.UtilsGuiEventsPartial or {} --[partial_name] = callback_function

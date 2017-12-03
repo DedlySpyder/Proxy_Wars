@@ -1,14 +1,10 @@
 --~~~~~~~~~~ Value GUI ~~~~~~~~~~--
+
+--Shows a list of all values that items will sell for
+
 GUI.ValueList = {}
 GUI.ValueList.NAME = "Proxy_Wars_view_value_list"
 GUI.ValueList.TAB_NAME = "value_list"
-
-GUI.ValueList.Create = function(player)
-	data = GUI.MainMenu.GetTabData(player)
-	data["active"] = GUI.ValueList.TAB_NAME
-	
-	Utils.TabLib.Create(data)
-end
 
 GUI.ValueList.Destroy = function(player)
 	data = GUI.MainMenu.GetTabData(player)
@@ -16,6 +12,7 @@ GUI.ValueList.Destroy = function(player)
 	Utils.TabLib.Destroy(data)
 end
 
+--See Utils.TabLib.Toggle for more info
 GUI.ValueList.OnToggle = function(event)
 	local player = game.players[event.player_index]
 	data = GUI.MainMenu.GetTabData(player)
@@ -31,11 +28,12 @@ GUI.ValueList.Close = function(event)
 end
 
 --TODO - stylings
-GUI.ValueList.Tab = function(flow)
-	player = game.players[flow.player_index]
+GUI.ValueList.Tab = function(tabFlow)
+	player = game.players[tabFlow.player_index]
 	
 	Debug.info("Drawing Value List GUI for "..player.name)
 	--local frame = player.gui.center.add{type="frame", name="Proxy_Wars_value_list", direction="vertical"}
+	local flow = tabFlow.add{type="flow", direction="vertical", style="Proxy_Wars_tab_flow"}
 	flow.add{type="label", caption={"Proxy_Wars_value_list_title"}, style="Proxy_Wars_lists_title"}
 	
 	local header = flow.add{type="flow", name="PW_Value_List_header_row", direction="horizontal"}
@@ -56,7 +54,7 @@ GUI.ValueList.Tab = function(flow)
 		end
 	end
 	
-	local footer = flow.add{type="flow", name="PW_Value_List_footer_row", direction="horizontal"}
+	local footer = tabFlow.add{type="flow", name="PW_Value_List_footer_row", direction="horizontal"}
 	footer.add{type="label", caption={"Proxy_Wars_current_money", Utils.String.FormatNumber(global.money[player.force.name])}, style="Proxy_Wars_value_list_current_money"}
 	footer.add{type="button", name="Proxy_Wars_value_list_close", caption={"Proxy_Wars_lists_close"}, style="Proxy_Wars_lists_close"}
 end

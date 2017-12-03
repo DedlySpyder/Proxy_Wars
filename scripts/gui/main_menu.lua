@@ -1,3 +1,9 @@
+--~~~~~~~~~~ Main Menu GUI ~~~~~~~~~~--
+--[[
+This menu is the central menu for interacting with Proxy Wars during the game
+The menu is made using my TabLib library (see scripts/utils/tab_lib.lua)
+The below required files are the different tabs that make up this menu
+]]--
 require "buy_biters"
 require "help"
 require "scoreboard"
