@@ -158,7 +158,7 @@ end
 
 script.on_event(defines.events.on_entity_died, on_entity_removed)
 script.on_event(defines.events.on_robot_pre_mined, on_entity_removed)
-script.on_event(defines.events.on_preplayer_mined_item, on_entity_removed)
+script.on_event(defines.events.on_pre_player_mined_item, on_entity_removed)
 
 function on_gui_click(event)
 	local player = game.players[event.player_index]

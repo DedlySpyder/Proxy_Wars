@@ -15,6 +15,7 @@ data:extend ({
 		type = "item",
 		name = "sell-chest-proxy-wars",
 		icon = "__Proxy_Wars__/graphics/sell_chest_icon.png",
+		icon_size = 32,
 		flags = {"goes-to-quickbar"},
 		subgroup = "logistic-network",
 		order = "b[storage]-c[zsell-chest-proxy-wars]",
@@ -27,6 +28,7 @@ local chest = util.table.deepcopy(data.raw["logistic-container"]["logistic-chest
 
 chest.name = "sell-chest-proxy-wars"
 chest.icon = "__Proxy_Wars__/graphics/sell_chest_icon.png"
+chest.icon_size = 32
 chest.minable = {hardness = 0.2, mining_time = 0.5, result = "sell-chest-proxy-wars"}
 chest.picture = {
 	filename = "__Proxy_Wars__/graphics/sell_chest.png",

@@ -38,7 +38,7 @@ function createArena()
 	local tiles = {}
 	for x=-sizeX, sizeX do
 		for y=-sizeY, sizeY do
-			table.insert(tiles, {name="grass", position={x, y}})
+			table.insert(tiles, {name="grass-1", position={x, y}})
 		end
 	end
 	arena.set_tiles(tiles, false)

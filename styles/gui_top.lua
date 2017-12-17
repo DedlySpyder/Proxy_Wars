@@ -17,7 +17,6 @@ data.raw["gui-style"].default["Proxy_Wars_main_menu_round_timer"] =
 data.raw["gui-style"].default["Proxy_Wars_players_buttons"] =
 {
 	type = "button_style",
-	parent = "button_style",
 	width = 40,
 	height = 40,
 	top_margin = 100,

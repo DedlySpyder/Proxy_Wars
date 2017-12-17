@@ -22,7 +22,6 @@ data.raw["gui-style"].default["Proxy_Wars_buy_biters_header_cost"] =
 data.raw["gui-style"].default["Proxy_Wars_buy_biters_entry_biter"] =
 {
 	type = "button_style",
-	parent = "button_style",
 	width = 40,
 	height = 40,
 	top_padding = 0,
