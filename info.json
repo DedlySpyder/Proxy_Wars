@@ -1,10 +1,10 @@
 {
   "name": "Proxy_Wars",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "title": "Proxy Wars",
   "author": "DedlySpyder",
   "contact": "DedlySpyder@gmail.com",
   "homepage": "",
   "description": "Compete against other players by purchasing biters to fight on neutral ground on your behalf.",
-  "factorio_version": "0.16"
+  "factorio_version": "0.17"
 }

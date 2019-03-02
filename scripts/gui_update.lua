@@ -344,7 +344,7 @@ function drawHelpMenu(player)
 		local frame = player.gui.center.add{type="frame", name="Proxy_Wars_help", direction="vertical", style="Proxy_Wars_help_frame"}
 		frame.add{type="label", caption={"Proxy_Wars_help_title"}, style="Proxy_Wars_lists_title"}
 		
-		for i=1, 11 do
+		for i=1, 13 do
 			frame.add{type="label", single_line=false, caption={"Proxy_Wars_help_"..i}, style="Proxy_Wars_help_body"}
 		end
 		

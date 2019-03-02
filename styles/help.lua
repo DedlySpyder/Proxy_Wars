@@ -3,8 +3,8 @@ data.raw["gui-style"].default["Proxy_Wars_help_frame"] =
 {
 	type = "frame_style",
 	font = "Proxy_Wars_entry",
-	minimal_width = 500,
-	maximal_width = 500,
+	minimal_width = 725,
+	maximal_width = 725,
 	title_right_padding = 500
 }
 
@@ -12,8 +12,8 @@ data.raw["gui-style"].default["Proxy_Wars_help_body"] =
 {
 	type = "label_style",
 	font = "Proxy_Wars_entry",
-	maximal_width = 480,
-	minimal_width = 480,
+	maximal_width = 700,
+	minimal_width = 700,
 	maximal_height = 50
 }
 

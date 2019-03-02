@@ -16,7 +16,6 @@ data:extend ({
 		name = "sell-chest-proxy-wars",
 		icon = "__Proxy_Wars__/graphics/sell_chest_icon.png",
 		icon_size = 32,
-		flags = {"goes-to-quickbar"},
 		subgroup = "logistic-network",
 		order = "b[storage]-c[zsell-chest-proxy-wars]",
 		place_result = "sell-chest-proxy-wars",

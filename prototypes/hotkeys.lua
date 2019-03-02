@@ -14,7 +14,7 @@ data:extend({
 	{
 		type = "custom-input",
 		name = "Proxy_Wars_view_buy_biters",
-		key_sequence = "B",
+		key_sequence = "F3",
 		consuming = "script-only"
 	},
 	{

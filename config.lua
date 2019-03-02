@@ -63,8 +63,7 @@ item_values["coal"] = 2
 item_values["water"] = 1
 item_values["crude-oil"] = 2
 item_values["raw-fish"] = 5
-item_values["raw-wood"] = 2
-item_values["alien-artifact"] = 5
+item_values["wood"] = 2
 
 --These will effect the automatic value generation buy multiply these values by the respective value
 ingredient_modifier = 1.0
