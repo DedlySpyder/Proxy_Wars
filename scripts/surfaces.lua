@@ -17,7 +17,7 @@ function teleportPlayer(player, surfaceName, position)
 	end
 	
 	--Find a good teleport position
-	local realPosition = surface.find_non_colliding_position("player", position, teleport_accuracy, 1)
+	local realPosition = surface.find_non_colliding_position("character", position, teleport_accuracy, 1)
 	if realPosition then
 		Debug.log("Valid position found at {"..realPosition.x..", "..realPosition.y.."} for teleport of "..player.name)
 		if player and player.valid then
